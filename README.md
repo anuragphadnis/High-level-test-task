@@ -120,7 +120,7 @@ To get started with the application, follow these steps:
 
 ## Usage
 
-Once the application is set up, you can use the provided APIs to book slots, list free slots, and list booked slots. Refer to the API documentation above for details on how to make requests and interpret responses.
+Once the application is set up, you can use the provided APIs to book slots, list free slots, and list booked slots. Refer to the API documentation above for details on how to make requests and interpret responses. The public deployment is availaible on `http://34.100.166.245:3000`
 
 ## Technologies Used
 
