@@ -12,5 +12,10 @@ export const configuration = () => ({
             name: 'Dr. John',
             id: 'bR7s9pT'
         },
+    },
+    database: {
+        firestore: {
+            databaseUrl: process.env.FIRESTORE_DB_URL,
+        }
     }
 });
