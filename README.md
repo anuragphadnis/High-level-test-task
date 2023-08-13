@@ -114,7 +114,7 @@ Response
 
 To get started with the application, follow these steps:
 
-1. Clone this repository: `git clone <repository_url>`
+1. Clone this repository: `git clone https://github.com/anuragphadnis/High-level-test-task.git`
 2. Install the required dependencies: `npm install`
 3. Run the application: `npm start`
 
