@@ -1,5 +1,5 @@
 import { configuration } from "src/config";
-import { BookSlotParams, EventRepoistory, GetEventsParams, GetFreeSlotsParams } from "./repository";
+import { BookSlotParams, EventRepoistory, GetEventParams, GetEventsParams, GetFreeSlotsParams } from "./repository";
 import { App, applicationDefault, initializeApp } from 'firebase-admin/app';
 import { Event } from "src/appointment-booking/models/event.model";
 import { BadRequestException, NotImplementedException } from "@nestjs/common";
@@ -9,12 +9,10 @@ import { plainToClass } from 'class-transformer';
 
 export class FirebaseEventRepository extends EventRepoistory {
     private model: firestore.CollectionReference<firestore.DocumentData>;
-    private config = configuration();
     constructor () {
         super();
         initializeApp({
             credential: applicationDefault(),
-            databaseURL: this.config.database.firestore.databaseUrl,
         });
         this.model = firestore().collection('event');
     }
