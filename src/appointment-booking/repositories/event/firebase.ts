@@ -1,53 +1,53 @@
-import { configuration } from "src/config";
-import { BookSlotParams, EventRepoistory, GetEventParams, GetEventsParams, GetFreeSlotsParams } from "./repository";
-import { App, applicationDefault, initializeApp } from 'firebase-admin/app';
-import { Event } from "src/appointment-booking/models/event.model";
-import { BadRequestException, NotImplementedException } from "@nestjs/common";
-import { firestore } from "firebase-admin";
-import { nanoid } from "nanoid";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { plainToClass } from 'class-transformer';
+import { firestore } from "firebase-admin";
+import { initializeApp } from 'firebase-admin/app';
+import { Event } from "src/appointment-booking/models/event.model";
+import { v4 as uuid } from 'uuid';
+import { BookSlotParams, EventRepoistory, GetEventsParams } from "./repository";
 
+@Injectable()
 export class FirebaseEventRepository extends EventRepoistory {
     private model: firestore.CollectionReference<firestore.DocumentData>;
     constructor () {
         super();
-        initializeApp({
-            credential: applicationDefault(),
-        });
+        const app = initializeApp();
         this.model = firestore().collection('event');
     }
 
     async bookSlot(data: BookSlotParams): Promise<Event> {
-        if ((await this.getEvents({
+        const currentEvent = await this.getEvents({
             duration: data.duration,
-            slotOwnerId: data.slotOwner.id,
+            slotOwnerId: this.config.slot.owner.id,
             startTime: data.startTime
-        })).length == 0) {
+        });
+        if (currentEvent.length != 0) {
             throw new BadRequestException('Slot already booked');
         }
         const endTime = Date.parse(this.getEndTime(data.startTime, data.duration).toString());
         const event: Event = {
             ...data,
-            slotOwner: {
-                id: this.config.slot.owner.id,
-                name: this.config.slot.owner.name,
-            },
+            slotOwnerId: this.config.slot.owner.id,
+            slotOwnerName: this.config.slot.owner.name,
             endTime,
         }
-        await this.model.doc(nanoid()).set(event);
+        await this.model.doc(uuid()).set(event);
         return event;
     }
 
     async getEvents(data: GetEventsParams): Promise<Event[]> {
-        const endTime = Date.parse(this.getEndTime(data.startTime, data.duration).toString());
+        const endTime = data.endTime || Date.parse(this.getEndTime(data.startTime, data.duration).toString());
         const res = await this.model
-            .where('slowOwner.id', '==', this.config.slot.owner.id)
-            .where('startTime', '>=', data.startTime)
-            .where('endTime', '<=', endTime).get();
-        console.log(res);
+            .where('slotOwnerId', '==', this.config.slot.owner.id)
+            .where('startTime', '>=', data.startTime).get()
+            // .where('endTime', '<=', endTime).get();
         if (res.empty) return [];
         const events: Event[] = [];
-        res.forEach(obj => events.push(plainToClass(Event, {...obj.data})));
+        res.docs.forEach(obj => {
+            if (obj.data().endTime <= endTime) {
+                events.push(plainToClass(Event, obj.data()))
+            }
+        });
         return events;
     }
 }

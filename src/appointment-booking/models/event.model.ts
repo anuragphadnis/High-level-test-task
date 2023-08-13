@@ -12,8 +12,6 @@ export class Event {
             email: string;
         }
     };
-    slotOwner: {
-        name: string;
-        id: string;
-    };
+    slotOwnerId: string;
+    slotOwnerName: string;
 }

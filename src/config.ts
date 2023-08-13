@@ -1,3 +1,5 @@
+import { Duration } from "./appointment-booking/models/duration.enum";
+
 export const configuration = () => ({
     slot: {
         startTime: {
@@ -17,5 +19,6 @@ export const configuration = () => ({
         firestore: {
             databaseUrl: process.env.FIRESTORE_DB_URL,
         }
-    }
+    },
+    duration: Duration.THIRTY_MIN,
 });

@@ -9,6 +9,7 @@ export interface GetEventsParams {
     slotOwnerId: string;
     startTime: number;
     duration: Duration;
+    endTime?: number;
 }
 
 export interface GetFreeSlotsParams {
@@ -28,10 +29,8 @@ export interface BookSlotParams {
             email: string;
         }
     };
-    slotOwner: {
-        name: string;
-        id: string;
-    };
+    slotOwnerId: string;
+    slotOwnerName: string;
 }
 
 export interface GetEventParams {
@@ -59,11 +58,13 @@ export abstract class EventRepoistory {
     async getFreeSlots(data: GetFreeSlotsParams): Promise<Slot[]> {
         let slotStartAt = set(new Date(), {
             hours: this.config.slot.startTime.hour,
-            minutes: this.config.slot.startTime.minute
+            minutes: this.config.slot.startTime.minute,
+            seconds: 0,
         });
         const lastSlotEndAt = set(new Date(), {
             hours: this.config.slot.endTime.hour,
             minutes: this.config.slot.endTime.minute,
+            seconds: 0,
         });
         const freeSlots: Slot[] = [];
         while (slotStartAt <= lastSlotEndAt) {
@@ -72,13 +73,14 @@ export abstract class EventRepoistory {
                 slotOwnerId: data.slotOwnerId,
                 startTime: Date.parse(slotStartAt.toString()),
             });
-            const slotEndsAt = Date.parse(this.getEndTime(slotStartAt, data.duration).toString());
+            const slotEndsAt = this.getEndTime(slotStartAt, data.duration);
             if (!event) {
                 freeSlots.push({
-                    endTime: slotEndsAt,
+                    endTime: Date.parse(slotEndsAt.toString()),
                     startTime: Date.parse(slotStartAt.toString()),
                 })
             }
+            slotStartAt = slotEndsAt;
         }
         return freeSlots;
     }
