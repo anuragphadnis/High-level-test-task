@@ -1,73 +1,127 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Slot Booking Application
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a test task submission for a high-level assessment. The purpose of this application is to create a slot booking system with the following features: booking a slot, listing free slots, and listing the booked slots.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
 
-## Description
+- [Introduction](#introduction)
+- [Features](#features)
+- [API Endpoints](#api-endpoints)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Technologies Used](#technologies-used)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Introduction
 
-## Installation
+This repository contains a slot booking application created as a test task submission. The application provides a set of HTTP APIs that allow users to manage slots, book available slots, and retrieve information about booked and free slots.
 
-```bash
-$ npm install
+## Features
+
+- **Book a Slot:** Users can book available slots based on their preferences.
+- **List Free Slots:** Users can retrieve a list of available slots that can be booked.
+- **List Booked Slots:** Users can view a list of slots that have already been booked.
+
+## API Endpoints
+
+### `POST /slot/free-slot`
+
+This API returns a list of free slots based on the provided criteria. The request format is as follows:
+
+```json
+{
+    "startAt": number,
+    "slotOwnerId": string
+}
+```
+Response
+```json
+{
+  "slots": [{
+    "startAt": number;
+    "endAt": number;
+  }]
+}
 ```
 
-## Running the app
+### `POST /slot/events`
 
-```bash
-# development
-$ npm run start
+This API returns a list of booked slots based on the provided criteria. The request format is as follows:
 
-# watch mode
-$ npm run start:dev
+```json
+{
+    "slotOwnerId": string,
+    "startDate": number,
+    "endDate": number
+}
 
-# production mode
-$ npm run start:prod
+```
+Response
+```json
+{
+  "events": [{
+    "startAt": number,
+    "endAt": number,
+    "booker": {
+        "name": string,
+        "id": string,
+        "contact": {
+            "phoneNumber": string,
+            "email": string
+        }
+    }
+  }]
+}
 ```
 
-## Test
+### `POST /slot/book`
 
-```bash
-# unit tests
-$ npm run test
+This API allows users to book a slot. The request format is:
 
-# e2e tests
-$ npm run test:e2e
+```json
+{
+    "startTime": number,
+    "booker": {
+        "name": string,
+        "id": string,
+        "contact": {
+            "phoneNumber": string,
+            "email": string
+        }
+    }
+}
 
-# test coverage
-$ npm run test:cov
+```
+Response
+```json
+{
+    "startTime": number,
+    "endTime": number,
+    "booker": {
+        "name": string,
+        "id": string,
+        "contact": {
+            "phoneNumber": string,
+            "email": string
+        }
+    },
+    "slotOwnerId": string,
+    "slotOwnerName": string
+}
+
 ```
 
-## Support
+## Getting Started
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+To get started with the application, follow these steps:
 
-## Stay in touch
+1. Clone this repository: `git clone <repository_url>`
+2. Install the required dependencies: `npm install`
+3. Run the application: `npm start`
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Usage
 
-## License
+Once the application is set up, you can use the provided APIs to book slots, list free slots, and list booked slots. Refer to the API documentation above for details on how to make requests and interpret responses.
 
-Nest is [MIT licensed](LICENSE).
+## Technologies Used
+
+The backend of this application is built using [NestJS](https://nestjs.com/), and the data is stored in a Firestore database.

@@ -1,26 +1,22 @@
+import { IsNumber, IsObject, IsString } from "class-validator";
+import { Booker } from "./booker.dto";
+
 export class BookSlotRequest {
+    @IsNumber()
     startTime: number;
-    booker: {
-        name: string;
-        id: string;
-        contact: {
-            phoneNumber: string;
-            email: string;
-        }
-    };
+    @IsObject()
+    booker: Booker;
 }
 
 export class BookSlotResponse {
+    @IsNumber()
     startTime: number;
+    @IsNumber()
     endTime: number;
-    booker: {
-        name: string;
-        id: string;
-        contact: {
-            phoneNumber: string;
-            email: string;
-        }
-    };
+    @IsObject()
+    booker: Booker;
+    @IsString()
     slotOwnerId: string;
+    @IsString()
     slotOwnerName: string;
 }
